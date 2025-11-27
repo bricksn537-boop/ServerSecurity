@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Purchase - Security Bot</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/img/logo.png" alt="logo" class="logo" onerror="this.style.display='none'">
+      <span class="title">SECURITY BOT</span>
+    </div>
+    <nav class="nav">
+      <a href="/">HOME</a>
+      <a href="/purchase.html">PURCHASE</a>
+      <a href="/setup.html">SETUP</a>
+      <a href="/support.html">SUPPORT</a>
+      <a href="/dashboard.html" id="dashboardLink" style="display:none;">DASHBOARD</a>
+    </nav>
+    <div class="auth">
+      <a class="login" href="javascript:redirectToLogin()" id="loginBtn">LOGIN</a>
+    </div>
+  </header>
+
+  <main style="padding: 100px 40px; max-width: 1200px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 80px;">
+      <h1 style="font-size: 3.5rem; color: var(--text); margin-bottom: 20px; text-shadow: 0 0 30px rgba(255,51,51,0.6);">PRICING PLANS</h1>
+      <p style="font-size: 1.3rem; color: var(--muted);">Choose the perfect plan for your server</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width: 750px; margin: 0 auto;">
+      <div class="pricing-card">
+        <h3 style="color: var(--text); font-size: 2.5rem; margin: 0 0 8px;">$10</h3>
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 32px;">per month</p>
+        <ul style="list-style: none; padding: 0; margin: 0 0 40px; text-align: left;">
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Full anti-nuke protection</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Anti-raid features</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ VoiceMaster system</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Advanced logging</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Priority support</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Dashboard access</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Custom thresholds</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ All features included</li>
+        </ul>
+        <button onclick="alert('Contact support to purchase monthly plan')" style="width: 100%;">GET MONTHLY</button>
+      </div>
+
+      <div class="pricing-card pricing-featured">
+        <div class="best-value-badge">BEST VALUE</div>
+        <h3 style="color: var(--text); font-size: 2.5rem; margin: 0 0 8px;">$30</h3>
+        <p style="color: var(--muted); font-size: 1.1rem; margin-bottom: 8px;">per year</p>
+        <p style="color: var(--text); font-size: 0.9rem; margin-bottom: 32px;">Save $90 annually</p>
+        <ul style="list-style: none; padding: 0; margin: 0 0 40px; text-align: left;">
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Full anti-nuke protection</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Anti-raid features</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ VoiceMaster system</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Advanced logging</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Priority support</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Dashboard access</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ Custom thresholds</li>
+          <li style="color: var(--muted); padding: 12px 0; border-bottom: 1px solid var(--border);">✓ All features included</li>
+          <li style="color: var(--text); padding: 12px 0; font-weight: 700;">✓ Save $90 per year</li>
+        </ul>
+        <button onclick="alert('Contact support to purchase yearly plan')" style="width: 100%;">GET YEARLY</button>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 60px; padding: 40px; background: linear-gradient(135deg, #111 0%, #0a0a0a 100%); border: 2px solid var(--border); border-radius: 16px;">
+      <h3 style="color: var(--text); margin: 0 0 16px; font-size: 1.8rem;">Need Help Choosing?</h3>
+      <p style="color: var(--muted); margin-bottom: 24px;">Contact our support team for assistance</p>
+      <button onclick="window.location.href='/support.html'">CONTACT SUPPORT</button>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Secure payment processing • 7-day money back guarantee</p>
+  </footer>
+  
+  <div id="userProfile" style="position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #111 0%, #0a0a0a 100%); border: 2px solid #333; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 1000;">
+    <img id="userAvatar" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #333;" src="" alt="">
+    <div id="userName" style="color: #fff; font-weight: 700; font-size: 14px;"></div>
+  </div>
+  
+  <script>
+    function redirectToLogin() {
+      const redirectUri = `${window.location.origin}/callback`;
+      const loginUrl = `https://discord.com/oauth2/authorize?client_id=1443152941656707152&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=guilds.join`;
+      window.location.href = loginUrl;
+    }
+
+    fetch('/api/user').then(r => r.json()).then(user => {
+      if (user) {
+        document.getElementById('dashboardLink').style.display = '';
+        document.getElementById('loginBtn').textContent = 'LOGOUT';
+        document.getElementById('loginBtn').href = '/logout';
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+        document.getElementById('userName').textContent = user.username;
+      }
+    }).catch(() => {});
+  </script>
+</body>
+</html>

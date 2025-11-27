@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Setup - Security Bot</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/img/logo.png" alt="logo" class="logo" onerror="this.style.display='none'">
+      <span class="title">SECURITY BOT</span>
+    </div>
+    <nav class="nav">
+      <a href="/">HOME</a>
+      <a href="/purchase.html">PURCHASE</a>
+      <a href="/setup.html">SETUP</a>
+      <a href="/support.html">SUPPORT</a>
+      <a href="/dashboard.html" id="dashboardLink" style="display:none;">DASHBOARD</a>
+    </nav>
+    <div class="auth">
+      <a class="login" href="javascript:redirectToLogin()" id="loginBtn">LOGIN</a>
+    </div>
+  </header>
+
+  <main style="padding: 100px 40px; max-width: 1000px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 80px;">
+      <h1 style="font-size: 3.5rem; color: var(--text); margin-bottom: 20px; text-shadow: 0 0 30px rgba(255,51,51,0.6); animation: glow 2s ease-in-out infinite alternate;">SETUP GUIDE</h1>
+      <p style="font-size: 1.3rem; color: var(--muted);">Get started in minutes</p>
+    </div>
+
+    <div style="display: grid; gap: 32px;">
+      <div class="setup-card">
+        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+          <div style="background: linear-gradient(135deg, var(--text) 0%, #cc0000 100%); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 28px; box-shadow: 0 4px 20px rgba(255,51,51,0.6);">1</div>
+          <h3 style="color: var(--text); margin: 0; font-size: 1.8rem;">Invite the Bot</h3>
+        </div>
+        <p style="color: var(--muted); margin-bottom: 20px; line-height: 1.6;">Click the button below to add Security Bot to your server with all necessary permissions.</p>
+        <button onclick="window.open('https://discord.com/oauth2/authorize?client_id=1443152941656707152&permissions=8&scope=bot%20applications.commands','_blank')">INVITE BOT</button>
+      </div>
+
+      <div class="setup-card">
+        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+          <div style="background: linear-gradient(135deg, var(--text) 0%, #cc0000 100%); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 28px; box-shadow: 0 4px 20px rgba(255,51,51,0.6);">2</div>
+          <h3 style="color: var(--text); margin: 0; font-size: 1.8rem;">Create Mod Logs Channel</h3>
+        </div>
+        <p style="color: var(--muted); margin-bottom: 12px; line-height: 1.6;">Create a text channel named <code style="background: #000; padding: 6px 12px; border-radius: 6px; color: var(--text); border: 1px solid var(--text); font-weight: 700;">mod-logs</code> for moderation alerts.</p>
+      </div>
+
+      <div class="setup-card">
+        <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 20px;">
+          <div style="background: linear-gradient(135deg, var(--text) 0%, #cc0000 100%); color: white; width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 28px; box-shadow: 0 4px 20px rgba(255,51,51,0.6);">3</div>
+          <h3 style="color: var(--text); margin: 0; font-size: 1.8rem;">Configure Settings</h3>
+        </div>
+        <p style="color: var(--muted); margin-bottom: 20px; line-height: 1.6;">Login to the dashboard to customize protection settings for your server.</p>
+        <button onclick="window.location.href='/dashboard.html'">OPEN DASHBOARD</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Need help? Visit our support page</p>
+  </footer>
+  
+  <div id="userProfile" style="position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #111 0%, #0a0a0a 100%); border: 2px solid #333; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 1000;">
+    <img id="userAvatar" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #333;" src="" alt="">
+    <div id="userName" style="color: #fff; font-weight: 700; font-size: 14px;"></div>
+  </div>
+  
+  <script>
+    function redirectToLogin() {
+      const redirectUri = `${window.location.origin}/callback`;
+      const loginUrl = `https://discord.com/oauth2/authorize?client_id=1443152941656707152&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=guilds.join`;
+      window.location.href = loginUrl;
+    }
+
+    fetch('/api/user').then(r => r.json()).then(user => {
+      if (user) {
+        document.getElementById('dashboardLink').style.display = '';
+        document.getElementById('loginBtn').textContent = 'LOGOUT';
+        document.getElementById('loginBtn').href = '/logout';
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+        document.getElementById('userName').textContent = user.username;
+      }
+    }).catch(() => {});
+  </script>
+</body>
+</html>

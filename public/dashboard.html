@@ -1,0 +1,1000 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dashboard — Security Bot</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    /* CRITICAL: Override all conflicting styles for dashboard inputs */
+    
+    /* Text inputs - fully editable */
+    input[type="text"],
+    input[type="color"],
+    input[type="number"],
+    input.text-input {
+      background: #111 !important;
+      border: 2px solid #ff3333 !important;
+      color: #fff !important;
+      padding: 12px 16px !important;
+      border-radius: 8px !important;
+      font-size: 14px !important;
+      transition: all 0.3s ease !important;
+      width: 100% !important;
+      max-width: none !important;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+      box-sizing: border-box !important;
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      pointer-events: all !important;
+    }
+    
+    input[type="text"]:focus,
+    input[type="color"]:focus,
+    input[type="number"]:focus,
+    input.text-input:focus {
+      outline: none !important;
+      border-color: #ff6666 !important;
+      box-shadow: 0 0 20px rgba(255, 51, 51, 0.6) !important;
+      background: #1a1a1a !important;
+    }
+    
+    input[type="text"]::placeholder,
+    input[type="number"]::placeholder {
+      color: #666 !important;
+    }
+    
+    /* Range slider - MUST be draggable */
+    input[type="range"],
+    input.slider {
+      width: 100% !important;
+      max-width: none !important;
+      height: 10px !important;
+      border-radius: 5px !important;
+      background: linear-gradient(to right, #ff3333, #cc0000) !important;
+      outline: none !important;
+      -webkit-appearance: none !important;
+      -moz-appearance: none !important;
+      appearance: none !important;
+      cursor: pointer !important;
+      pointer-events: all !important;
+      accent-color: #ff3333 !important;
+      padding: 10px 0 !important;
+      box-sizing: border-box !important;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    /* Webkit (Chrome, Safari) slider thumb */
+    input[type="range"]::-webkit-slider-thumb,
+    input.slider::-webkit-slider-thumb {
+      -webkit-appearance: none !important;
+      appearance: none !important;
+      width: 28px !important;
+      height: 28px !important;
+      border-radius: 50% !important;
+      background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important;
+      cursor: grab !important;
+      box-shadow: 0 0 20px rgba(255, 51, 51, 1) !important;
+      border: 3px solid #fff !important;
+      pointer-events: all !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    input[type="range"]::-webkit-slider-thumb:active,
+    input.slider::-webkit-slider-thumb:active {
+      cursor: grabbing !important;
+      box-shadow: 0 0 30px rgba(255, 51, 51, 1.2) !important;
+    }
+    
+    /* Firefox slider thumb */
+    input[type="range"]::-moz-range-thumb,
+    input.slider::-moz-range-thumb {
+      width: 28px !important;
+      height: 28px !important;
+      border-radius: 50% !important;
+      background: linear-gradient(135deg, #ff3333 0%, #cc0000 100%) !important;
+      cursor: grab !important;
+      box-shadow: 0 0 20px rgba(255, 51, 51, 1) !important;
+      border: 3px solid #fff !important;
+      pointer-events: all !important;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    }
+    
+    input[type="range"]::-moz-range-thumb:active,
+    input.slider::-moz-range-thumb:active {
+      cursor: grabbing !important;
+      box-shadow: 0 0 30px rgba(255, 51, 51, 1.2) !important;
+    }
+    
+    input[type="range"]::-moz-range-track,
+    input.slider::-moz-range-track {
+      background: transparent !important;
+      border: none !important;
+    }
+    
+    input[type="range"]::-moz-range-progress,
+    input.slider::-moz-range-progress {
+      background: linear-gradient(to right, #ff3333, #cc0000) !important;
+    }
+    
+    /* Color input */
+    input[type="color"] {
+      width: 80px !important;
+      height: 50px !important;
+      cursor: pointer !important;
+      border: 2px solid #ff3333 !important;
+      border-radius: 8px !important;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="particles-canvas"></canvas>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/img/logo.png" alt="logo" class="logo" onerror="this.style.display='none'">
+      <span class="title">SECURITY BOT</span>
+    </div>
+    <nav class="nav">
+      <a href="/">HOME</a>
+      <a href="/purchase.html">PURCHASE</a>
+      <a href="/dashboard.html">DASHBOARD</a>
+      <a href="/setup.html">SETUP</a>
+      <a href="/support.html">SUPPORT</a>
+    </nav>
+    <div class="auth">
+      <a class="login" href="/logout">LOGOUT</a>
+    </div>
+  </header>
+
+  <div class="dashboard-container">
+    <aside class="server-sidebar">
+      <div class="sidebar-header">
+        <h3>YOUR SERVERS</h3>
+      </div>
+      <div id="serverList" class="server-list">
+        <div class="loading-servers">Loading...</div>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <div id="welcomeScreen" class="welcome-screen">
+        <h1>Welcome to Security Bot Dashboard</h1>
+        <p>Select a server from the left to manage its settings</p>
+      </div>
+
+      <div id="serverSettings" class="server-settings" style="display:none;">
+        <div class="settings-header">
+          <img id="currentServerIcon" class="server-icon-large" src="/img/logo.png" alt="Server">
+          <div>
+            <h1 id="currentServerName">Server Name</h1>
+            <p id="currentServerId" class="muted">ID: Loading...</p>
+          </div>
+        </div>
+
+        <div class="settings-tabs">
+          <button class="tab-btn active" data-tab="antinuke">Anti-Nuke</button>
+          <button class="tab-btn" data-tab="antiraid">Anti-Raid</button>
+          <button class="tab-btn" data-tab="voicemaster">VoiceMaster</button>
+          <button class="tab-btn" data-tab="logs">Logs</button>
+          <button class="tab-btn" data-tab="welcome">Welcome</button>
+          <button class="tab-btn" data-tab="tickets">Tickets</button>
+          <button class="tab-btn" data-tab="giveaways">Giveaways</button>
+          <button class="tab-btn" data-tab="autoreply">Auto Reply</button>
+          <button class="tab-btn" data-tab="suggestions">Suggestions</button>
+          <button class="tab-btn" data-tab="rules">Rules</button>
+        </div>
+
+        <div class="tab-content active" id="antinuke-tab">
+          <h2>Anti-Nuke Protection</h2>
+          <p class="muted">Protect your server from destructive actions</p>
+          
+
+          
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Ban Protection</h3>
+                <p>Prevent mass banning</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-bans">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-bans" style="display:none;">
+              <label>Threshold: <span id="value-bans">3</span></label>
+              <input type="range" min="1" max="20" value="3" class="slider" data-setting="bans">
+              <label style="margin-top: 8px;">Time: <span id="value-bans-time">60</span>s</label>
+              <input type="range" min="0" max="300" value="60" class="slider" id="bans-timeframe">
+              <select id="bans-action" class="text-input" style="margin-top: 8px;">
+                <option value="ban">Ban</option>
+                <option value="kick">Kick</option>
+                <option value="timeout">Timeout</option>
+                <option value="removeRoles">Remove Roles</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Kick Protection</h3>
+                <p>Prevent mass kicking</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-kicks">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-kicks" style="display:none;">
+              <label>Threshold: <span id="value-kicks">3</span></label>
+              <input type="range" min="1" max="20" value="3" class="slider" data-setting="kicks">
+              <label style="margin-top: 8px;">Time: <span id="value-kicks-time">60</span>s</label>
+              <input type="range" min="0" max="300" value="60" class="slider" id="kicks-timeframe">
+              <select id="kicks-action" class="text-input" style="margin-top: 8px;">
+                <option value="ban">Ban</option>
+                <option value="kick">Kick</option>
+                <option value="timeout">Timeout</option>
+                <option value="removeRoles">Remove Roles</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Role Delete Protection</h3>
+                <p>Prevent role deletion</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-roleDeletes">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-roleDeletes" style="display:none;">
+              <label>Threshold: <span id="value-roleDeletes">3</span></label>
+              <input type="range" min="1" max="20" value="3" class="slider" data-setting="roleDeletes">
+              <label style="margin-top: 8px;">Time: <span id="value-roleDeletes-time">60</span>s</label>
+              <input type="range" min="0" max="300" value="60" class="slider" id="roleDeletes-timeframe">
+              <select id="roleDeletes-action" class="text-input" style="margin-top: 8px;">
+                <option value="ban">Ban</option>
+                <option value="kick">Kick</option>
+                <option value="timeout">Timeout</option>
+                <option value="removeRoles">Remove Roles</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Channel Delete Protection</h3>
+                <p>Prevent channel deletion</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-channelDeletes">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-channelDeletes" style="display:none;">
+              <label>Threshold: <span id="value-channelDeletes">3</span></label>
+              <input type="range" min="1" max="20" value="3" class="slider" data-setting="channelDeletes">
+              <label style="margin-top: 8px;">Time: <span id="value-channelDeletes-time">60</span>s</label>
+              <input type="range" min="0" max="300" value="60" class="slider" id="channelDeletes-timeframe">
+              <select id="channelDeletes-action" class="text-input" style="margin-top: 8px;">
+                <option value="ban">Ban</option>
+                <option value="kick">Kick</option>
+                <option value="timeout">Timeout</option>
+                <option value="removeRoles">Remove Roles</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Bot Add Protection</h3>
+                <p>Prevent unauthorized bot additions</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-botAdds">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-botAdds" style="display:none;">
+              <label>Threshold: <span id="value-botAdds">2</span></label>
+              <input type="range" min="1" max="10" value="2" class="slider" data-setting="botAdds">
+              <label style="margin-top: 8px;">Time: <span id="value-botAdds-time">60</span>s</label>
+              <input type="range" min="0" max="300" value="60" class="slider" id="botAdds-timeframe">
+              <select id="botAdds-action" class="text-input" style="margin-top: 8px;">
+                <option value="ban">Ban</option>
+                <option value="kick">Kick</option>
+                <option value="timeout">Timeout</option>
+                <option value="removeRoles">Remove Roles</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Server Name Change Protection</h3>
+                <p>Prevent server name changes</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-serverNameChange">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-serverNameChange" style="display:none;">
+              <label>Threshold: <span id="value-serverNameChange">2</span></label>
+              <input type="range" min="1" max="10" value="2" class="slider" data-setting="serverNameChange">
+              <label style="margin-top: 8px;">Time: <span id="value-serverNameChange-time">60</span>s</label>
+              <input type="range" min="0" max="300" value="60" class="slider" id="serverNameChange-timeframe">
+              <select id="serverNameChange-action" class="text-input" style="margin-top: 8px;">
+                <option value="ban">Ban</option>
+                <option value="kick">Kick</option>
+                <option value="timeout">Timeout</option>
+                <option value="removeRoles">Remove Roles</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Server Icon Change Protection</h3>
+                <p>Prevent server icon changes</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-serverIconChange">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-serverIconChange" style="display:none;">
+              <label>Threshold: <span id="value-serverIconChange">2</span></label>
+              <input type="range" min="1" max="10" value="2" class="slider" data-setting="serverIconChange">
+              <label style="margin-top: 8px;">Time: <span id="value-serverIconChange-time">60</span>s</label>
+              <input type="range" min="0" max="300" value="60" class="slider" id="serverIconChange-timeframe">
+              <select id="serverIconChange-action" class="text-input" style="margin-top: 8px;">
+                <option value="ban">Ban</option>
+                <option value="kick">Kick</option>
+                <option value="timeout">Timeout</option>
+                <option value="removeRoles">Remove Roles</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()">Save Anti-Nuke Settings</button>
+        </div>
+
+        <div class="tab-content" id="antiraid-tab">
+          <h2>Anti-Raid Protection</h2>
+          <p class="muted">Protect against raid attacks</p>
+          
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Text Spam Protection</h3>
+                <p>Detect and prevent spam messages</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-textSpam">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+            <div class="threshold-slider" id="slider-textSpam" style="display:none;">
+              <label>Threshold: <span id="value-textSpam">5</span></label>
+              <input type="range" min="1" max="20" value="5" class="slider" data-setting="textSpam">
+            </div>
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()">Save Anti-Raid Settings</button>
+        </div>
+
+        <div class="tab-content" id="voicemaster-tab">
+          <h2>VoiceMaster Settings</h2>
+          <p class="muted">Configure temporary voice channels</p>
+          
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Enable VoiceMaster</h3>
+                <p>Allow users to create temporary voice channels</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-voicemaster">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label>Join to Create Channel ID</label>
+            <input type="text" id="voicemaster-join-channel" placeholder="Channel ID" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Category ID</label>
+            <input type="text" id="voicemaster-category" placeholder="Category ID" class="text-input">
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()">Save VoiceMaster Settings</button>
+        </div>
+
+        <div class="tab-content" id="logs-tab">
+          <h2>Logging Settings</h2>
+          <p class="muted">Configure where logs are sent and what to log</p>
+          
+          <div class="setting-group">
+            <label>Mod Logs Channel ID</label>
+            <input type="text" id="logs-mod-channel" placeholder="Channel ID for moderation logs" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Server Logs Channel ID</label>
+            <input type="text" id="logs-server-channel" placeholder="Channel ID for server logs" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Channel Logs Channel ID</label>
+            <input type="text" id="logs-channel-channel" placeholder="Channel ID for channel logs" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Role Logs Channel ID</label>
+            <input type="text" id="logs-role-channel" placeholder="Channel ID for role logs" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Message Logs Channel ID</label>
+            <input type="text" id="logs-message-channel" placeholder="Channel ID for message logs" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Voice Logs Channel ID</label>
+            <input type="text" id="logs-voice-channel" placeholder="Channel ID for voice logs" class="text-input">
+          </div>
+
+          <h3 style="color: var(--text); margin: 24px 0 16px;">Member Events</h3>
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Member Joins</h3>
+                <p>Log when members join the server</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-joins">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Member Leaves</h3>
+                <p>Log when members leave the server</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-leaves">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Member Bans</h3>
+                <p>Log when members are banned</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-bans">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <h3 style="color: var(--text); margin: 24px 0 16px;">Channel Events</h3>
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Channel Creates</h3>
+                <p>Log when channels are created</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-channel-create">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Channel Deletes</h3>
+                <p>Log when channels are deleted</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-channel-delete">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Channel Updates</h3>
+                <p>Log when channels are updated</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-channel-update">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <h3 style="color: var(--text); margin: 24px 0 16px;">Message Events</h3>
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Message Deletes</h3>
+                <p>Log when messages are deleted</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-message-delete">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Message Edits</h3>
+                <p>Log when messages are edited</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-message-edit">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <h3 style="color: var(--text); margin: 24px 0 16px;">Role Events</h3>
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Role Creates</h3>
+                <p>Log when roles are created</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-role-create">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Role Deletes</h3>
+                <p>Log when roles are deleted</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-role-delete">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <h3 style="color: var(--text); margin: 24px 0 16px;">Voice Events</h3>
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Voice Joins</h3>
+                <p>Log when members join voice channels</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-voice-join">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Voice Leaves</h3>
+                <p>Log when members leave voice channels</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-voice-leave">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Voice Moves</h3>
+                <p>Log when members are moved between voice channels</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-voice-move">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <h3 style="color: var(--text); margin: 24px 0 16px;">Other Events</h3>
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Log Emoji Creates</h3>
+                <p>Log when emojis are created</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-log-emoji-create">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()">Save Log Settings</button>
+        </div>
+
+        <div class="tab-content" id="welcome-tab">
+          <h2>Welcome Settings</h2>
+          <p class="muted">Customize the welcome message for new members</p>
+          
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Enable Welcome</h3>
+                <p>Send a welcome message to new members</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-welcome">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label>Welcome Channel ID</label>
+            <input type="text" id="welcome-channel" placeholder="Channel ID" class="text-input">
+            <p class="muted">The channel where welcome messages will be sent</p>
+          </div>
+
+          <div class="setting-group">
+            <label>Welcome Image URL</label>
+            <input type="text" id="welcome-image-url" placeholder="https://example.com/image.png" class="text-input">
+            <p class="muted">Paste the URL of the background image for the welcome card</p>
+          </div>
+
+          <div class="setting-group">
+            <label>Welcome Text</label>
+            <input type="text" id="welcome-text" placeholder="Welcome to the server!" class="text-input">
+            <p class="muted">The text shown on the welcome card (e.g., 'Welcome to our server!')</p>
+          </div>
+
+          <div class="setting-group">
+            <label>Welcome Card Color</label>
+            <input type="color" id="welcome-color" value="#9933CC">
+            <p class="muted">Click to pick a color for the embed border and accents</p>
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()">Save Welcome Settings</button>
+        </div>
+
+        <div class="tab-content" id="tickets-tab">
+          <h2>Ticket System</h2>
+          <p class="muted">Configure ticket categories and customize the ticket panel</p>
+          
+          <div class="setting-group">
+            <h3 style="color: var(--text); margin-bottom: 16px;">Panel Customization</h3>
+            
+            <label>Panel Title</label>
+            <input type="text" id="ticket-panel-title" placeholder="🎫 Official Support Ticket System" class="text-input" value="🎫 Official Support Ticket System">
+            
+            <label style="margin-top: 16px;">Panel Description</label>
+            <input type="text" id="ticket-panel-desc" placeholder="Select a category to create a ticket..." class="text-input" value="Welcome! Please select the category that best describes your issue.">
+            
+            <label style="margin-top: 16px;">Panel Color (Hex)</label>
+            <input type="color" id="ticket-panel-color" value="#ff3333">
+            
+            <label style="margin-top: 16px;">Ticket Creation Message</label>
+            <input type="text" id="ticket-create-msg" placeholder="Your ticket has been created!" class="text-input" value="Your ticket for {CATEGORY} has been created! Please describe your issue.">
+            <p class="muted">Use {CATEGORY} to insert the category name</p>
+          </div>
+
+          <div class="setting-group">
+            <h3 style="color: var(--text); margin-bottom: 16px;">Category IDs</h3>
+            <p class="muted">Right-click categories in Discord → Copy ID</p>
+            
+            <label>General Support Category ID</label>
+            <input type="text" id="ticket-cat-general" placeholder="Category ID" class="text-input">
+            
+            <label style="margin-top: 12px;">Billing Category ID</label>
+            <input type="text" id="ticket-cat-billing" placeholder="Category ID" class="text-input">
+            
+            <label style="margin-top: 12px;">Technical Category ID</label>
+            <input type="text" id="ticket-cat-technical" placeholder="Category ID" class="text-input">
+            
+            <label style="margin-top: 12px;">Moderator Report Category ID</label>
+            <input type="text" id="ticket-cat-moderator" placeholder="Category ID" class="text-input">
+            
+            <label style="margin-top: 12px;">Feedback Category ID</label>
+            <input type="text" id="ticket-cat-feedback" placeholder="Category ID" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <h3 style="color: var(--text); margin-bottom: 16px;">Ticket Options</h3>
+            
+            <div style="background: rgba(17,17,17,0.8); border: 2px solid rgba(255,51,51,0.2); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+              <h4 style="color: #fff; margin: 0 0 12px;">General Support</h4>
+              <label>Label</label>
+              <input type="text" id="ticket-opt-general-label" placeholder="General Support" class="text-input" value="General Support">
+              <label style="margin-top: 8px;">Description</label>
+              <input type="text" id="ticket-opt-general-desc" placeholder="For general questions" class="text-input" value="For general questions about the server">
+              <label style="margin-top: 8px;">Emoji</label>
+              <input type="text" id="ticket-opt-general-emoji" placeholder="❓" class="text-input" value="❓">
+            </div>
+
+            <div style="background: rgba(17,17,17,0.8); border: 2px solid rgba(255,51,51,0.2); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+              <h4 style="color: #fff; margin: 0 0 12px;">Billing Inquiry</h4>
+              <label>Label</label>
+              <input type="text" id="ticket-opt-billing-label" placeholder="Billing Inquiry" class="text-input" value="Billing Inquiry">
+              <label style="margin-top: 8px;">Description</label>
+              <input type="text" id="ticket-opt-billing-desc" placeholder="Questions about payments" class="text-input" value="Questions about payments or subscriptions">
+              <label style="margin-top: 8px;">Emoji</label>
+              <input type="text" id="ticket-opt-billing-emoji" placeholder="💳" class="text-input" value="💳">
+            </div>
+
+            <div style="background: rgba(17,17,17,0.8); border: 2px solid rgba(255,51,51,0.2); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+              <h4 style="color: #fff; margin: 0 0 12px;">Technical Issue</h4>
+              <label>Label</label>
+              <input type="text" id="ticket-opt-technical-label" placeholder="Technical Issue" class="text-input" value="Technical Issue">
+              <label style="margin-top: 8px;">Description</label>
+              <input type="text" id="ticket-opt-technical-desc" placeholder="Report a bug" class="text-input" value="Report a bug or technical problem">
+              <label style="margin-top: 8px;">Emoji</label>
+              <input type="text" id="ticket-opt-technical-emoji" placeholder="⚙️" class="text-input" value="⚙️">
+            </div>
+
+            <div style="background: rgba(17,17,17,0.8); border: 2px solid rgba(255,51,51,0.2); border-radius: 12px; padding: 20px; margin-bottom: 16px;">
+              <h4 style="color: #fff; margin: 0 0 12px;">Moderator Report</h4>
+              <label>Label</label>
+              <input type="text" id="ticket-opt-moderator-label" placeholder="Moderator Report" class="text-input" value="Moderator Report">
+              <label style="margin-top: 8px;">Description</label>
+              <input type="text" id="ticket-opt-moderator-desc" placeholder="Report a user" class="text-input" value="Report a user or rule violation">
+              <label style="margin-top: 8px;">Emoji</label>
+              <input type="text" id="ticket-opt-moderator-emoji" placeholder="🚨" class="text-input" value="🚨">
+            </div>
+
+            <div style="background: rgba(17,17,17,0.8); border: 2px solid rgba(255,51,51,0.2); border-radius: 12px; padding: 20px;">
+              <h4 style="color: #fff; margin: 0 0 12px;">Feedback & Suggestions</h4>
+              <label>Label</label>
+              <input type="text" id="ticket-opt-feedback-label" placeholder="Feedback & Suggestions" class="text-input" value="Feedback & Suggestions">
+              <label style="margin-top: 8px;">Description</label>
+              <input type="text" id="ticket-opt-feedback-desc" placeholder="Share ideas" class="text-input" value="Share ideas to improve the server">
+              <label style="margin-top: 8px;">Emoji</label>
+              <input type="text" id="ticket-opt-feedback-emoji" placeholder="💡" class="text-input" value="💡">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="save-btn" onclick="saveSettings()">Save Ticket Settings</button>
+            <button class="save-btn" onclick="sendTicketPanel()" style="background: #00ff00;">Send Panel</button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="giveaways-tab">
+          <h2>Giveaway Settings</h2>
+          <p class="muted">Configure giveaway system</p>
+          
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Enable Giveaways</h3>
+                <p>Allow giveaway commands</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-giveaways">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label>Giveaway Channel ID</label>
+            <input type="text" id="giveaway-channel" placeholder="Channel ID for giveaways" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Required Role ID (Optional)</label>
+            <input type="text" id="giveaway-role" placeholder="Role ID required to enter" class="text-input">
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="save-btn" onclick="saveSettings()">Save Giveaway Settings</button>
+            <button class="save-btn" onclick="sendGiveaway()" style="background: #00ff00;">Send Giveaway</button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="autoreply-tab">
+          <h2>Auto Reply Settings</h2>
+          <p class="muted">Set up automatic responses to keywords</p>
+          
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Enable Auto Reply</h3>
+                <p>Automatically respond to keywords</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-autoreply">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label>Keywords (comma separated)</label>
+            <input type="text" id="autoreply-keywords" placeholder="hello, hi, support" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Auto Reply Message</label>
+            <input type="text" id="autoreply-message" placeholder="Thanks for your message!" class="text-input">
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()">Save Auto Reply Settings</button>
+        </div>
+
+        <div class="tab-content" id="suggestions-tab">
+          <h2>Suggestion Settings</h2>
+          <p class="muted">Configure suggestion system</p>
+          
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Enable Suggestions</h3>
+                <p>Allow users to submit suggestions</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-suggestions">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="setting-group">
+            <label>Suggestion Channel ID</label>
+            <input type="text" id="suggestion-channel" placeholder="Channel ID for suggestions" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <div class="setting-item">
+              <div class="setting-info">
+                <h3>Auto React</h3>
+                <p>Automatically add thumbs up/down reactions</p>
+              </div>
+              <label class="toggle">
+                <input type="checkbox" id="toggle-suggestion-react">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <button class="save-btn" onclick="saveSettings()">Save Suggestion Settings</button>
+        </div>
+
+        <div class="tab-content" id="rules-tab">
+          <h2>Rules Settings</h2>
+          <p class="muted">Configure server rules display</p>
+          
+          <div class="setting-group">
+            <label>Rules Channel ID</label>
+            <input type="text" id="rules-channel" placeholder="Channel ID for rules" class="text-input">
+          </div>
+
+          <div class="setting-group">
+            <label>Rules Title</label>
+            <input type="text" id="rules-title" placeholder="Server Rules" class="text-input" value="Server Rules">
+          </div>
+
+          <div class="setting-group">
+            <label>Rules Description</label>
+            <input type="text" id="rules-description" placeholder="Please follow these rules" class="text-input" value="Please follow these rules to keep our community safe">
+          </div>
+
+          <div class="setting-group">
+            <label>Rules Color</label>
+            <input type="color" id="rules-color" value="#ff3333">
+          </div>
+
+          <div style="display: flex; gap: 10px;">
+            <button class="save-btn" onclick="saveSettings()">Save Rules Settings</button>
+            <button class="save-btn" onclick="sendRules()" style="background: #00ff00;">Send Rules</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="notification" class="notification"></div>
+
+  <div id="userProfile" style="position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #111 0%, #0a0a0a 100%); border: 2px solid #333; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 1000;">
+    <img id="userAvatar" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #333;" src="" alt="">
+    <div>
+      <div id="userName" style="color: #fff; font-weight: 700; font-size: 14px;"></div>
+      
+    </div>
+  </div>
+
+  <script src="/dashboard.js"></script>
+  <script src="/auth.js"></script>
+  <script>
+    async function loadUserProfile() {
+      try {
+        const res = await fetch('/api/user');
+        const user = await res.json();
+        if (user) {
+          document.getElementById('userProfile').style.display = 'flex';
+          document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+          document.getElementById('userName').textContent = user.username;
+        }
+      } catch (e) {}
+    }
+    loadUserProfile();
+    
+    // Force sliders and text inputs to be interactive
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        document.querySelectorAll('input[type="range"]').forEach(slider => {
+          slider.style.pointerEvents = 'auto !important';
+          slider.style.cursor = 'pointer !important';
+        });
+        document.querySelectorAll('input[type="text"], input[type="color"]').forEach(input => {
+          input.style.pointerEvents = 'auto !important';
+          input.removeAttribute('readonly');
+          input.removeAttribute('disabled');
+        });
+      }, 50);
+      
+      // Auto-save on all inputs
+      let saveTimeout;
+      const autoSave = () => {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(() => {
+          if (typeof saveSettings === 'function') {
+            saveSettings();
+          }
+        }, 1000);
+      };
+      
+      document.querySelectorAll('input[type="checkbox"], input[type="range"], input[type="text"], input[type="color"], select').forEach(input => {
+        input.addEventListener('change', autoSave);
+        input.addEventListener('input', autoSave);
+      });
+      
+      // Add timeframe slider handlers for each protection
+      ['bans', 'kicks', 'roleDeletes', 'channelDeletes', 'botAdds', 'serverNameChange', 'serverIconChange'].forEach(setting => {
+        const slider = document.getElementById(`${setting}-timeframe`);
+        const value = document.getElementById(`value-${setting}-time`);
+        if (slider && value) {
+          slider.addEventListener('input', (e) => {
+            value.textContent = e.target.value;
+          });
+        }
+      });
+    });
+  </script>
+  <script src="/particles.js"></script>
+</body>
+</html>

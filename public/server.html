@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Server Configuration - Security Bot</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    .server-header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 30px 40px;
+    }
+    
+    .server-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    
+    .server-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+    
+    .server-details h1 {
+      color: var(--text);
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0;
+      text-shadow: 0 0 15px rgba(255, 51, 51, 0.3);
+    }
+    
+    .server-id {
+      color: var(--text-muted);
+      font-family: 'Courier New', monospace;
+      font-size: 1rem;
+      margin: 5px 0 0 0;
+    }
+    
+    .breadcrumb {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+    
+    .breadcrumb a {
+      color: var(--blue);
+      text-decoration: none;
+    }
+    
+    .config-panel {
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      margin: 40px auto;
+      max-width: 800px;
+    }
+    
+    .config-title {
+      color: var(--text);
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin: 0 0 30px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .config-section {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 25px;
+    }
+    
+    .section-title {
+      color: var(--text-light);
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0 0 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-field {
+      margin-bottom: 20px;
+    }
+    
+    .form-field label {
+      display: block;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+    
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-light);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-field input:focus,
+    .form-field select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    
+    .help-text {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 5px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    
+    .btn-save {
+      background: linear-gradient(135deg, var(--success) 0%, #059669 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-discord {
+      background: linear-gradient(135deg, #5865f2 0%, #4752c4 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .btn-discord:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(88, 101, 242, 0.4);
+    }
+    
+    .status-message {
+      padding: 15px 20px;
+      border-radius: 10px;
+      margin-top: 20px;
+      font-weight: 500;
+      text-align: center;
+    }
+    
+    .status-success {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid var(--success);
+      color: var(--success);
+    }
+    
+    .status-error {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid var(--danger);
+      color: var(--danger);
+    }
+    
+    .status-info {
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+    
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--text-muted);
+      border-top: 2px solid var(--text-light);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-right: 8px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/img/logo.png" alt="Security Bot Logo" class="logo" onerror="this.style.display='none'">
+      <span class="title">SECURITY BOT</span>
+    </div>
+    <nav class="nav">
+      <a href="/" onclick="navigateTo('/')">HOME</a>
+      <a href="/purchase.html" onclick="navigateTo('/purchase.html')">PURCHASE</a>
+      <a href="/setup.html" onclick="navigateTo('/setup.html')">SETUP</a>
+      <a href="/support.html" onclick="navigateTo('/support.html')">SUPPORT</a>
+    </nav>
+    <div class="auth">
+      <a class="login" href="/logout" onclick="handleLogout(event)">LOGOUT</a>
+    </div>
+  </header>
+
+  <img src="/img/logo.png" alt="logo" class="top-right-logo" onerror="this.style.display='none'">
+
+  <div class="server-header">
+    <div class="breadcrumb">
+      <a href="/dashboard.html">Dashboard</a> > Server Configuration
+    </div>
+    <div class="server-info">
+      <img id="serverAvatar" src="/img/logo.png" alt="Server" class="server-avatar">
+      <div class="server-details">
+        <h1 id="serverTitle">Server Configuration</h1>
+        <p id="serverId" class="server-id">Loading server information...</p>
+      </div>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="config-panel">
+      <h2 class="config-title">⚙️ Security Configuration</h2>
+      
+      <div id="settingsArea">
+        <div class="config-grid">
+          <div class="config-section">
+            <h3 class="section-title">🛡️ Threat Detection</h3>
+            
+            <div class="form-field">
+              <label for="channelDeleteThreshold">Channel Delete Threshold</label>
+              <input id="channelDeleteThreshold" type="number" min="1" max="50" placeholder="3">
+              <div class="help-text">Maximum channel deletions before taking action</div>
+            </div>
+            
+            <div class="form-field">
+              <label for="banThreshold">Ban Threshold</label>
+              <input id="banThreshold" type="number" min="1" max="50" placeholder="3">
+              <div class="help-text">Maximum bans before taking action</div>
+            </div>
+          </div>
+          
+          <div class="config-section">
+            <h3 class="section-title">⏱️ Response Settings</h3>
+            
+            <div class="form-field">
+              <label for="timeframeMs">Detection Timeframe (ms)</label>
+              <input id="timeframeMs" type="number" min="1000" max="300000" placeholder="60000">
+              <div class="help-text">Time window for detecting suspicious activity</div>
+            </div>
+            
+            <div class="form-field">
+              <label for="punishAction">Punishment Action</label>
+              <select id="punishAction">
+                <option value="ban">Ban User</option>
+                <option value="kick">Kick User</option>
+                <option value="removeRoles">Remove All Roles</option>
+              </select>
+              <div class="help-text">Action to take when threshold is exceeded</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="action-buttons">
+          <button id="saveBtn" class="btn-save">
+            💾 Save Configuration
+          </button>
+          <button id="openDiscordBtn" class="btn-discord">
+            🔗 Open in Discord
+          </button>
+        </div>
+        
+        <div id="msg" class="status-message" style="display: none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Changes are saved automatically to your server configuration. Test your settings in a safe environment first.</p>
+  </footer>
+
+  <script>
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+
+    function handleLogout(event) {
+      event.preventDefault();
+      window.location.href = '/logout';
+    }
+  </script>
+  <script src="/server.js"></script>
+</body>
+</html>

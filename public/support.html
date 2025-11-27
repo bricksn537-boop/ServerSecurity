@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Support - Security Bot</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/img/logo.png" alt="logo" class="logo" onerror="this.style.display='none'">
+      <span class="title">SECURITY BOT</span>
+    </div>
+    <nav class="nav">
+      <a href="/">HOME</a>
+      <a href="/purchase.html">PURCHASE</a>
+      <a href="/setup.html">SETUP</a>
+      <a href="/support.html">SUPPORT</a>
+      <a href="/dashboard.html" id="dashboardLink" style="display:none;">DASHBOARD</a>
+    </nav>
+    <div class="auth">
+      <a class="login" href="javascript:redirectToLogin()" id="loginBtn">LOGIN</a>
+    </div>
+  </header>
+
+  <main style="padding: 100px 40px; max-width: 1000px; margin: 0 auto;">
+    <div style="text-align: center; margin-bottom: 80px;">
+      <h1 style="font-size: 3.5rem; color: var(--text); margin-bottom: 20px; text-shadow: 0 0 30px rgba(255,51,51,0.6); animation: glow 2s ease-in-out infinite alternate;">SUPPORT</h1>
+      <p style="font-size: 1.3rem; color: var(--muted);">We're here to help</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 32px; margin-bottom: 60px;">
+      <div class="support-card">
+        <div style="font-size: 4rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(255,51,51,0.4));">💬</div>
+        <h3 style="color: var(--text); margin: 0 0 16px; font-size: 1.5rem;">Discord Support</h3>
+        <p style="color: var(--muted); margin-bottom: 24px; line-height: 1.6;">Join our Discord server for real-time help</p>
+        <button onclick="window.open('https://discord.gg/npzW8N94a3','_blank')">JOIN DISCORD</button>
+      </div>
+
+      <div class="support-card">
+        <div style="font-size: 4rem; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(255,51,51,0.4));">📚</div>
+        <h3 style="color: var(--text); margin: 0 0 16px; font-size: 1.5rem;">Documentation</h3>
+        <p style="color: var(--muted); margin-bottom: 24px; line-height: 1.6;">Read our comprehensive guides</p>
+        <button onclick="window.location.href='/setup.html'">VIEW DOCS</button>
+      </div>
+    </div>
+
+    <div class="faq-card">
+      <h2 style="color: var(--text); margin: 0 0 40px; font-size: 2rem; text-align: center; text-shadow: 0 0 20px rgba(255,51,51,0.4);">Frequently Asked Questions</h2>
+      
+      <div class="faq-item">
+        <h3 style="color: var(--text); margin: 0 0 12px; font-size: 1.3rem;">How do I invite the bot?</h3>
+        <p style="color: var(--muted); margin: 0; line-height: 1.6;">Click the "Add to Server" button on the homepage or visit our setup page for detailed instructions.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3 style="color: var(--text); margin: 0 0 12px; font-size: 1.3rem;">What permissions does the bot need?</h3>
+        <p style="color: var(--muted); margin: 0; line-height: 1.6;">The bot requires Administrator permissions to properly protect your server from threats.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3 style="color: var(--text); margin: 0 0 12px; font-size: 1.3rem;">How do I configure settings?</h3>
+        <p style="color: var(--muted); margin: 0; line-height: 1.6;">Login to the dashboard with your Discord account and select your server to customize all protection settings.</p>
+      </div>
+
+      <div class="faq-item" style="border-bottom: none;">
+        <h3 style="color: var(--text); margin: 0 0 12px; font-size: 1.3rem;">Is the bot free?</h3>
+        <p style="color: var(--muted); margin: 0; line-height: 1.6;">Yes! Security Bot is completely free with all core features included. Premium features coming soon.</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>Still need help? Join our Discord server</p>
+  </footer>
+  
+  <div id="userProfile" style="position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #111 0%, #0a0a0a 100%); border: 2px solid #333; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 1000;">
+    <img id="userAvatar" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #333;" src="" alt="">
+    <div id="userName" style="color: #fff; font-weight: 700; font-size: 14px;"></div>
+  </div>
+  
+  <script>
+    function redirectToLogin() {
+      const redirectUri = `${window.location.origin}/callback`;
+      const loginUrl = `https://discord.com/oauth2/authorize?client_id=1443152941656707152&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=guilds.join`;
+      window.location.href = loginUrl;
+    }
+
+    fetch('/api/user').then(r => r.json()).then(user => {
+      if (user) {
+        document.getElementById('dashboardLink').style.display = '';
+        document.getElementById('loginBtn').textContent = 'LOGOUT';
+        document.getElementById('loginBtn').href = '/logout';
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+        document.getElementById('userName').textContent = user.username;
+      }
+    }).catch(() => {});
+  </script>
+</body>
+</html>

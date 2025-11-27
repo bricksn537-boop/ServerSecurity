@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Security Bot</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="brand">
+      <img src="/img/logo.png" alt="logo" class="logo" onerror="this.style.display='none'">
+      <span class="title">SECURITY BOT</span>
+    </div>
+    <nav class="nav">
+      <a href="/">HOME</a>
+      <a href="/purchase.html">PURCHASE</a>
+      <a href="/setup.html">SETUP</a>
+      <a href="/support.html">SUPPORT</a>
+      <a href="/dashboard.html" id="dashboardLink" style="display:none;">DASHBOARD</a>
+    </nav>
+    <div class="auth">
+      <a class="login" href="javascript:redirectToLogin()" id="loginBtn">LOGIN</a>
+    </div>
+  </header>
+
+  <main class="hero">
+    <div class="hero-content">
+      <h1>SECURITY BOT</h1>
+      <p>Protect your Discord server from raiders, nukers and any type of damage.</p>
+      <a class="cta" href="https://discord.com/oauth2/authorize?client_id=1443152941656707152&permissions=8&scope=bot%20applications.commands" target="_blank">ADD TO SERVER</a>
+      
+      <div class="server-showcase">
+        <div class="server-track" id="serverTrack"></div>
+      </div>
+    </div>
+  </main>
+
+  <section class="features">
+    <h2>POWERFUL PROTECTION</h2>
+    <p>Advanced security features to keep your server safe</p>
+    
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h3>🛡️ Anti-Nuke Protection</h3>
+        <p>Prevents mass channel deletion, role manipulation, and server destruction attempts.</p>
+      </div>
+      <div class="feature-card">
+        <h3>⚡ Real-time Monitoring</h3>
+        <p>24/7 surveillance with instant threat detection and automated response systems.</p>
+      </div>
+      <div class="feature-card">
+        <h3>🎯 Smart Moderation</h3>
+        <p>Intelligent ban/kick/timeout system with customizable thresholds and actions.</p>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 100px 40px; background: #000; text-align: center;">
+    <h2 style="font-size: 3rem; color: var(--text); margin-bottom: 24px; text-shadow: 0 0 30px rgba(255,51,51,0.6);">DASHBOARD MANAGEMENT</h2>
+    <p style="font-size: 1.3rem; color: var(--muted); margin-bottom: 48px;">Configure all settings from our powerful web dashboard</p>
+    <div style="max-width: 800px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #111 0%, #0a0a0a 100%); border: 2px solid var(--border); border-radius: 16px; padding: 48px;">
+        <h3 style="color: var(--text); margin: 0 0 20px; font-size: 1.8rem;">Easy Configuration</h3>
+        <p style="color: var(--muted); margin-bottom: 32px;">Manage Anti-Nuke, Anti-Raid, VoiceMaster, and Logging settings all in one place</p>
+        <a href="/dashboard.html" class="btn-primary">OPEN DASHBOARD</a>
+      </div>
+    </div>
+  </section>
+
+  <section style="padding: 100px 40px; background: #0a0a0a; text-align: center;">
+    <h2 style="font-size: 3rem; color: var(--text); margin-bottom: 24px; text-shadow: 0 0 30px rgba(255,51,51,0.6);">TRUSTED BY SERVERS</h2>
+    <p style="font-size: 1.3rem; color: var(--muted); margin-bottom: 48px;">Join thousands of protected Discord communities</p>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 40px; max-width: 900px; margin: 0 auto;">
+      <div>
+        <div id="serverCount" style="font-size: 3rem; color: var(--text); font-weight: 900; margin-bottom: 8px;">5000+</div>
+        <div style="color: var(--muted); font-size: 1.1rem;">Servers Protected</div>
+      </div>
+      <div>
+        <div id="uptime" style="font-size: 3rem; color: var(--text); font-weight: 900; margin-bottom: 8px;">0m</div>
+        <div style="color: var(--muted); font-size: 1.1rem;">Online For</div>
+      </div>
+      <div>
+        <div style="font-size: 3rem; color: var(--text); font-weight: 900; margin-bottom: 8px;">24/7</div>
+        <div style="color: var(--muted); font-size: 1.1rem;">Support</div>
+      </div>
+    </div>
+    <script>
+      async function updateStats() {
+        try {
+          const res = await fetch('/api/stats');
+          const data = await res.json();
+          document.getElementById('serverCount').textContent = data.serverCount.toLocaleString() + '+';
+          document.getElementById('uptime').textContent = data.uptimeText;
+        } catch (e) {}
+      }
+      updateStats();
+      setInterval(updateStats, 5000);
+    </script>
+  </section>
+
+  <footer class="site-footer">
+    <p>Ready to secure your Discord community?</p>
+  </footer>
+  
+  <div id="userProfile" style="position: fixed; bottom: 20px; left: 20px; background: linear-gradient(135deg, #111 0%, #0a0a0a 100%); border: 2px solid #333; border-radius: 12px; padding: 12px 16px; display: none; align-items: center; gap: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.4); z-index: 1000;">
+    <img id="userAvatar" style="width: 40px; height: 40px; border-radius: 50%; border: 2px solid #333;" src="" alt="">
+    <div id="userName" style="color: #fff; font-weight: 700; font-size: 14px;"></div>
+  </div>
+  
+  <script src="/particles.js"></script>
+  <script>
+    function redirectToLogin() {
+      const redirectUri = `${window.location.origin}/callback`;
+      const loginUrl = `https://discord.com/oauth2/authorize?client_id=1443152941656707152&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&scope=guilds.join`;
+      window.location.href = loginUrl;
+    }
+
+    fetch('/api/user').then(r => r.json()).then(user => {
+      if (user) {
+        document.getElementById('dashboardLink').style.display = '';
+        document.getElementById('loginBtn').textContent = 'LOGOUT';
+        document.getElementById('loginBtn').href = '/logout';
+        document.getElementById('userProfile').style.display = 'flex';
+        document.getElementById('userAvatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+        document.getElementById('userName').textContent = user.username;
+      }
+    }).catch(() => {});
+
+    fetch('/api/bot-servers').then(r => r.json()).then(servers => {
+      const track = document.getElementById('serverTrack');
+      if (!servers || servers.length === 0) return;
+      
+      const serverHTML = servers.map(s => `
+        <div class="server-card">
+          <img src="${s.icon}" alt="${s.name}" onerror="this.src='/img/logo.png'">
+          <div class="server-info">
+            <div class="server-name">${s.name}</div>
+            <div class="server-members">${s.members.toLocaleString()} members</div>
+          </div>
+        </div>
+      `).join('');
+      
+      track.innerHTML = serverHTML + serverHTML;
+    }).catch(() => {});
+  </script>
+</body>
+</html>
